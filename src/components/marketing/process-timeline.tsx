@@ -131,6 +131,7 @@ export function TechStack() {
     { name: "Docker", icon: "inventory_2" },
     { name: "OpenAI", icon: "smart_toy" },
     { name: "GitHub", icon: "code_blocks" },
+    { name: "Vercel", icon: "rocket_launch" },
   ];
 
   return (

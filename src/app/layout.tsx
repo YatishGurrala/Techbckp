@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   title: "Techbckp | Execution Partner for Founders & Niche Businesses",
   description:
     "Techbckp helps founders, coaches, creators, and niche businesses launch apps, automation, websites, and content systems without hiring a tech team.",
+  icons: {
+    icon: "/bkp_Orange.png",
+    shortcut: "/bkp_Orange.png",
+    apple: "/bkp_Orange.png",
+  },
 };
 
 export default function RootLayout({
