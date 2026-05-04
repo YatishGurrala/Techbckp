@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ContactIntakeForm } from "@/components/marketing/contact-intake-form";
 import { PageShell } from "@/components/marketing/page-shell";
 import { externalLinks } from "@/lib/site-data";
 
@@ -73,6 +74,15 @@ export default function ContactPage() {
               </a>
             </div>
           ))}
+        </div>
+
+        <div className="ambient-shadow mt-16 rounded-xl border border-outline-variant bg-surface-container-lowest p-gutter">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary-container">Need to share project details?</p>
+          <h2 className="text-headline-md text-on-background">Fill out the request form</h2>
+          <p className="mt-2 mb-8 max-w-2xl text-body-md text-tertiary">
+            Send us the details in one go so we can review your needs and come back with the right next steps.
+          </p>
+          <ContactIntakeForm />
         </div>
 
         {/* FAQ strip */}

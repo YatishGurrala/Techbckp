@@ -12,7 +12,10 @@ export type AnalyticsEventName =
   | "notion_publish_skipped"
   | "notion_publish_unauthorized"
   | "notion_publish_verification"
-  | "notion_publish_failed";
+  | "notion_publish_failed"
+  | "contact_form_invalid_input"
+  | "contact_form_submitted"
+  | "contact_form_webhook_failed";
 
 export type AnalyticsParams = Record<string, string | number | boolean | null | undefined>;
 

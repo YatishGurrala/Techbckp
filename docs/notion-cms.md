@@ -49,38 +49,38 @@ GA_API_SECRET=
 
 ## Collections schema
 
-| Property | Type | Used by |
-| --- | --- | --- |
-| `Name` | Title | Every collection |
-| `Collection` | Select (`service`, `pricing`, `audience`, `process`, `nav`, `qualification`) | Every collection |
-| `Order` | Number | Every collection |
-| `Status` | Status (`Draft`, `Published`) | Every collection |
-| `Slug` | Rich text | services, pricing |
-| `Price` | Rich text | services, pricing |
-| `Duration` | Rich text | services |
-| `Subtitle` | Rich text | process, pricing tagline |
-| `Description` | Rich text | services, audiences, process |
-| `Items` | Multi-select | services `Includes`, pricing `Features` |
-| `Href` | Rich text | nav, pricing CTA |
-| `CTA Label` | Rich text | pricing |
-| `Bucket` | Select (`Good Fit`, `Not a Fit`) | qualification |
-| `Featured` | Checkbox | services, pricing |
+| Property      | Type                                                                         | Used by                                 |
+| ------------- | ---------------------------------------------------------------------------- | --------------------------------------- |
+| `Name`        | Title                                                                        | Every collection                        |
+| `Collection`  | Select (`service`, `pricing`, `audience`, `process`, `nav`, `qualification`) | Every collection                        |
+| `Order`       | Number                                                                       | Every collection                        |
+| `Status`      | Status (`Draft`, `Published`)                                                | Every collection                        |
+| `Slug`        | Rich text                                                                    | services, pricing                       |
+| `Price`       | Rich text                                                                    | services, pricing                       |
+| `Duration`    | Rich text                                                                    | services                                |
+| `Subtitle`    | Rich text                                                                    | process, pricing tagline                |
+| `Description` | Rich text                                                                    | services, audiences, process            |
+| `Items`       | Multi-select                                                                 | services `Includes`, pricing `Features` |
+| `Href`        | Rich text                                                                    | nav, pricing CTA                        |
+| `CTA Label`   | Rich text                                                                    | pricing                                 |
+| `Bucket`      | Select (`Good Fit`, `Not a Fit`)                                             | qualification                           |
+| `Featured`    | Checkbox                                                                     | services, pricing                       |
 
 Tip: create one Notion view per `Collection` value so editing each list feels
 like a separate table.
 
 ## Blog Posts schema
 
-| Property | Type | Notes |
-| --- | --- | --- |
-| `Title` (or `Name`) | Title | Post title |
-| `Slug` | Rich text | URL slug |
-| `Status` | Status / Select | Must be `Published` |
-| `Excerpt` | Rich text | Listing summary |
-| `Category` | Select | E.g. `Automation` |
-| `Date` | Date | Publish date |
-| `Author` | Person / Rich text | Display name |
-| `ReadTime` | Rich text or Number | E.g. `9 min read` or `9` |
+| Property            | Type                | Notes                    |
+| ------------------- | ------------------- | ------------------------ |
+| `Title` (or `Name`) | Title               | Post title               |
+| `Slug`              | Rich text           | URL slug                 |
+| `Status`            | Status / Select     | Must be `Published`      |
+| `Excerpt`           | Rich text           | Listing summary          |
+| `Category`          | Select              | E.g. `Automation`        |
+| `Date`              | Date                | Publish date             |
+| `Author`            | Person / Rich text  | Display name             |
+| `ReadTime`          | Rich text or Number | E.g. `9 min read` or `9` |
 
 ## Webhook publish flow
 

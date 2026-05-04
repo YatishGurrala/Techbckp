@@ -34,3 +34,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Contact Form Configuration
+
+The contact page includes a structured intake form that posts to `/api/contact`.
+
+- `CONTACT_FORM_WEBHOOK_URL` (optional): Absolute URL for your CRM, Zapier/Make scenario, Slack webhook proxy, or backend collector.
+- `CONTACT_FORM_WEBHOOK_SECRET` (optional): Shared secret sent as the `x-contact-form-secret` header.
+
+If `CONTACT_FORM_WEBHOOK_URL` is not set, submissions are still accepted and logged on the server, but they are not forwarded to an external system.
