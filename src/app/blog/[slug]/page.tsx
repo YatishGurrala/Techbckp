@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
@@ -12,6 +12,7 @@ type BlogPostPageProps = {
 };
 
 export const revalidate = 300;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const posts = await getSortedPosts();
@@ -46,7 +47,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const related = allPosts.filter((candidate) => candidate.slug !== normalizedSlug).slice(0, 2);
+  if (post.slug !== normalizedSlug) {
+    redirect(`/blog/${encodeURIComponent(post.slug)}`);
+  }
+
+  const related = allPosts.filter((candidate) => candidate.slug !== post.slug).slice(0, 2);
 
   return (
     <PageShell footerVariant="dark">

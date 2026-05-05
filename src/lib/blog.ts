@@ -29,9 +29,29 @@ export type BlogPost = BlogMeta & {
 
 const postsDirectory = path.join(process.cwd(), "content", "blog");
 
+// Keep backwards compatibility for previously shared links.
+const SLUG_ALIASES: Record<string, string> = {
+  "from-idea-to-mvp-in-45-days": "30-day-mvp-development-system",
+};
+
 function normalizeSlug(value: string): string {
   const decoded = decodeURIComponent(String(value || "")).trim();
-  return decoded.replace(/^\/+/, "").replace(/^blog\//, "").replace(/\/+$/, "");
+  const normalized = decoded.replace(/^\/+/, "").replace(/^blog\//, "").replace(/\/+$/, "");
+  return SLUG_ALIASES[normalized] ?? normalized;
+}
+
+function sortByDateDesc(a: BlogMeta, b: BlogMeta): number {
+  return a.date < b.date ? 1 : -1;
+}
+
+function mergePosts(markdownPosts: BlogMeta[], notionPosts: BlogMeta[]): BlogMeta[] {
+  const merged = new Map<string, BlogMeta>();
+
+  // Start with markdown so a published Notion post with the same slug can override it.
+  for (const post of markdownPosts) merged.set(post.slug, post);
+  for (const post of notionPosts) merged.set(post.slug, post);
+
+  return Array.from(merged.values()).sort(sortByDateDesc);
 }
 
 function metaFromNotion(post: NotionPostMeta): BlogMeta {
@@ -73,7 +93,7 @@ function readMarkdownPosts(): BlogMeta[] {
         author: String(data.author ?? "Techbckp Team"),
       };
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    .sort(sortByDateDesc);
 }
 
 async function readMarkdownPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -99,15 +119,17 @@ async function readMarkdownPostBySlug(slug: string): Promise<BlogPost | null> {
 }
 
 export async function getSortedPosts(): Promise<BlogMeta[]> {
+  const markdownPosts = readMarkdownPosts();
+
   if (isNotionConfigured()) {
     try {
-      const posts = await listPublishedPosts();
-      if (posts.length > 0) return posts.map(metaFromNotion);
+      const notionPosts = (await listPublishedPosts()).map(metaFromNotion);
+      return mergePosts(markdownPosts, notionPosts);
     } catch (err) {
       console.warn("[blog] Notion list failed, falling back to markdown", err);
     }
   }
-  return readMarkdownPosts();
+  return markdownPosts;
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost> {
