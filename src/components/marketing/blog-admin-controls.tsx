@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import type { BlogMeta } from "@/lib/blog";
@@ -42,8 +42,6 @@ async function callAdmin(
 
 export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const adminEnabled = searchParams.get("admin") === "1";
 
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
@@ -53,10 +51,6 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
   const sorted = useMemo(() => {
     return [...posts].sort((a, b) => a.title.localeCompare(b.title));
   }, [posts]);
-
-  if (!adminEnabled) {
-    return null;
-  }
 
   const requireToken = () => {
     if (!token.trim()) {

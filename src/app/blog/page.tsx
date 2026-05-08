@@ -2,7 +2,6 @@ import { BlogList } from "@/components/marketing/blog-preview";
 import { BlogAdminControls } from "@/components/marketing/blog-admin-controls";
 import { PageShell } from "@/components/marketing/page-shell";
 import { getSortedPosts } from "@/lib/blog";
-import { Suspense } from "react";
 
 // Re-fetch from Notion at most every 5 minutes; webhook revalidation handles instant updates.
 export const revalidate = 300;
@@ -19,9 +18,7 @@ export default async function BlogPage() {
         </p>
       </section>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <Suspense fallback={null}>
-          <BlogAdminControls posts={posts} />
-        </Suspense>
+        <BlogAdminControls posts={posts} />
         <BlogList posts={posts} />
       </div>
     </PageShell>

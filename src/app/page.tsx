@@ -20,7 +20,7 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [posts, services, audiences, processSteps, qualification, pricing] =
+  const [posts, services, audiences, processSteps, qualification, pricing, heroPage] =
     await Promise.all([
       getSortedPosts(),
       getServices(),
@@ -28,11 +28,12 @@ export default async function Home() {
       getProcessSteps(),
       getQualification(),
       getPricing(),
+      getPage("hero"),
     ]);
 
   return (
     <PageShell>
-      <HeroSection />
+      <HeroSection html={heroPage?.contentHtml ?? null} />
       <ServicesBento services={services} />
       <AudienceCards audiences={audiences} />
       <ProcessSection steps={processSteps} />
