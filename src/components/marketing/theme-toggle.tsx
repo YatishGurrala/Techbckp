@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function ThemeToggle() {
-  // Start with null to avoid hydration mismatch — render nothing until mounted
-  const [isDark, setIsDark] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    // Read actual state from DOM on first mount
-    const dark = document.documentElement.classList.contains("dark");
-    setIsDark(dark);
-  }, []);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof document === "undefined") return false;
+    return document.documentElement.classList.contains("dark");
+  });
 
   function toggle() {
     const next = !isDark;
@@ -21,12 +17,6 @@ export function ThemeToggle() {
     } catch {
       /* ignore */
     }
-  }
-
-  // Render an invisible placeholder on the server / before hydration
-  // so the DOM tree shape matches and React doesn't warn
-  if (isDark === null) {
-    return <div className="h-10 w-10" aria-hidden />;
   }
 
   return (

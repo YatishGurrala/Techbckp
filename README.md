@@ -43,3 +43,50 @@ The contact page includes a structured intake form that posts to `/api/contact`.
 - `CONTACT_FORM_WEBHOOK_SECRET` (optional): Shared secret sent as the `x-contact-form-secret` header.
 
 If `CONTACT_FORM_WEBHOOK_URL` is not set, submissions are still accepted and logged on the server, but they are not forwarded to an external system.
+
+## Buildstack CMS Integration
+
+This app uses Buildstack CMS as a headless backend for homepage and blog content.
+
+Required environment variables:
+
+- `BUILDSTACK_CMS_BASE_URL` (example: `https://cms.builddeck.io`)
+- `BUILDSTACK_PROJECT_SLUG`
+- `BUILDSTACK_PROJECT_ID`
+- `BUILDSTACK_ADMIN_API_KEY`
+- `BUILDSTACK_WEBHOOK_SECRET`
+
+The app validates these variables in the server layout and fails fast if any are missing or invalid.
+
+### Run locally
+
+1. Add the required variables to `.env.local`.
+2. Install dependencies and start dev server:
+
+```bash
+npm install
+npm run dev
+```
+
+### Test CMS connection
+
+Use the public endpoint directly to confirm project-level reads:
+
+```bash
+curl "${BUILDSTACK_CMS_BASE_URL}/api/public/blogs?project=${BUILDSTACK_PROJECT_SLUG}"
+```
+
+Verify webhook signature handling in this app:
+
+```bash
+node -e 'const c=require("node:crypto");const body=JSON.stringify({type:"blog.published",slug:"example"});const sig=c.createHmac("sha256",process.env.BUILDSTACK_WEBHOOK_SECRET).update(body).digest("hex");console.log(body);console.log(sig);'
+```
+
+Then send the payload/signature to:
+
+```bash
+curl -X POST "http://localhost:3000/api/buildstack-webhook" \
+	-H "Content-Type: application/json" \
+	-H "X-Buildstack-Signature: <signature-from-command-above>" \
+	-d '<body-from-command-above>'
+```

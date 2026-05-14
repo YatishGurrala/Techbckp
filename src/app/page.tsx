@@ -9,31 +9,31 @@ import { QualificationSection } from "@/components/marketing/qualification-secti
 import { ServicesBento } from "@/components/marketing/service-cards";
 import { getSortedPosts } from "@/lib/blog";
 import {
-  getAudiences,
-  getPage,
-  getPricing,
-  getProcessSteps,
-  getQualification,
-  getServices,
-} from "@/lib/cms";
+  getHomepageAudiences,
+  getHomepageHeroHtml,
+  getHomepagePricing,
+  getHomepageProcessSteps,
+  getHomepageQualification,
+  getHomepageServices,
+} from "@/lib/buildstack/content";
 
 export const revalidate = 300;
 
 export default async function Home() {
-  const [posts, services, audiences, processSteps, qualification, pricing, heroPage] =
+  const [posts, services, audiences, processSteps, qualification, pricing, heroHtml] =
     await Promise.all([
       getSortedPosts(),
-      getServices(),
-      getAudiences(),
-      getProcessSteps(),
-      getQualification(),
-      getPricing(),
-      getPage("hero"),
+      getHomepageServices(),
+      getHomepageAudiences(),
+      getHomepageProcessSteps(),
+      getHomepageQualification(),
+      getHomepagePricing(),
+      getHomepageHeroHtml(),
     ]);
 
   return (
     <PageShell>
-      <HeroSection html={heroPage?.contentHtml ?? null} />
+      <HeroSection html={heroHtml} />
       <ServicesBento services={services} />
       <AudienceCards audiences={audiences} />
       <ProcessSection steps={processSteps} />

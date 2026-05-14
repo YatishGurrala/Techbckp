@@ -5,13 +5,7 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
 
-import {
-  getPostBySlugFromNotion,
-  isNotionConfigured,
-  listPublishedPosts,
-  type NotionPost,
-  type NotionPostMeta,
-} from "./notion-cms";
+import { getCmsBlogList, getCmsBlogPost } from "./buildstack/content";
 
 export type BlogMeta = {
   slug: string;
@@ -52,23 +46,6 @@ function mergePosts(markdownPosts: BlogMeta[], notionPosts: BlogMeta[]): BlogMet
   for (const post of notionPosts) merged.set(post.slug, post);
 
   return Array.from(merged.values()).sort(sortByDateDesc);
-}
-
-function metaFromNotion(post: NotionPostMeta): BlogMeta {
-  const slug = normalizeSlug(post.slug);
-  return {
-    slug,
-    title: post.title,
-    excerpt: post.excerpt,
-    date: post.date,
-    category: post.category,
-    readTime: post.readTime,
-    author: post.author,
-  };
-}
-
-function postFromNotion(post: NotionPost): BlogPost {
-  return { ...metaFromNotion(post), contentHtml: post.contentHtml };
 }
 
 function readMarkdownPosts(): BlogMeta[] {
@@ -121,27 +98,24 @@ async function readMarkdownPostBySlug(slug: string): Promise<BlogPost | null> {
 export async function getSortedPosts(): Promise<BlogMeta[]> {
   const markdownPosts = readMarkdownPosts();
 
-  if (isNotionConfigured()) {
-    try {
-      const notionPosts = (await listPublishedPosts()).map(metaFromNotion);
-      return mergePosts(markdownPosts, notionPosts);
-    } catch (err) {
-      console.warn("[blog] Notion list failed, falling back to markdown", err);
-    }
+  try {
+    const cmsPosts = await getCmsBlogList();
+    return mergePosts(markdownPosts, cmsPosts);
+  } catch (err) {
+    console.warn("[blog] Buildstack list failed, falling back to markdown", err);
   }
+
   return markdownPosts;
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost> {
   const normalizedSlug = normalizeSlug(slug);
 
-  if (isNotionConfigured()) {
-    try {
-      const post = await getPostBySlugFromNotion(normalizedSlug);
-      if (post) return postFromNotion(post);
-    } catch (err) {
-      console.warn("[blog] Notion fetch failed, falling back to markdown", err);
-    }
+  try {
+    const post = await getCmsBlogPost(normalizedSlug);
+    if (post) return post;
+  } catch (err) {
+    console.warn("[blog] Buildstack fetch failed, falling back to markdown", err);
   }
 
   const markdownPost = await readMarkdownPostBySlug(normalizedSlug);

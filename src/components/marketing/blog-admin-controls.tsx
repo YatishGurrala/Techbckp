@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import type { BlogMeta } from "@/lib/blog";
@@ -14,8 +14,8 @@ type ResponsePayload = {
   error?: string;
   count?: number;
   results?: Array<{ slug: string; created: boolean }>;
-  notionDeleted?: boolean;
   localDeleted?: boolean;
+  note?: string;
 };
 
 async function callAdmin(
@@ -42,6 +42,8 @@ async function callAdmin(
 
 export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const adminEnabled = searchParams.get("admin") === "1";
 
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
@@ -51,6 +53,10 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
   const sorted = useMemo(() => {
     return [...posts].sort((a, b) => a.title.localeCompare(b.title));
   }, [posts]);
+
+  if (!adminEnabled) {
+    return null;
+  }
 
   const requireToken = () => {
     if (!token.trim()) {
@@ -62,10 +68,10 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
   const onSyncAll = async () => {
     try {
       setBusy(true);
-      setStatus("Syncing all markdown blogs to Notion...");
+      setStatus("Checking markdown blog inventory...");
       const auth = requireToken();
       const result = await callAdmin("POST", auth, { action: "syncAll" });
-      setStatus(`Synced ${result.count ?? 0} posts.`);
+      setStatus(result.note || `Checked ${result.count ?? 0} posts.`);
       router.refresh();
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Sync failed.");
@@ -79,8 +85,8 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
       setBusy(true);
       setStatus(`Syncing ${slug}...`);
       const auth = requireToken();
-      await callAdmin("POST", auth, { action: "syncOne", slug });
-      setStatus(`Synced ${slug}.`);
+      const result = await callAdmin("POST", auth, { action: "syncOne", slug });
+      setStatus(result.note || `Checked ${slug}.`);
       router.refresh();
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Sync failed.");
@@ -95,9 +101,7 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
       setStatus(`Deleting ${slug}...`);
       const auth = requireToken();
       const result = await callAdmin("DELETE", auth, { slug, deleteLocal });
-      setStatus(
-        `Deleted ${slug}. Notion: ${result.notionDeleted ? "yes" : "no"}, local: ${result.localDeleted ? "yes" : "no"}.`,
-      );
+      setStatus(`Deleted ${slug}. Local markdown removed: ${result.localDeleted ? "yes" : "no"}.`);
       router.refresh();
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Delete failed.");
@@ -111,7 +115,7 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
       <div className="flex flex-col gap-4">
         <div>
           <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Blog Admin Controls</h2>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Use these buttons to sync markdown blogs to Notion or delete a blog.</p>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Use these tools to manage local markdown blog files.</p>
         </div>
 
         <label className="flex flex-col gap-2 text-sm text-zinc-700 dark:text-zinc-300">
@@ -132,7 +136,7 @@ export function BlogAdminControls({ posts }: BlogAdminControlsProps) {
             disabled={busy}
             className="rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {busy ? "Working..." : "Sync All to Notion"}
+            {busy ? "Working..." : "Check Markdown Inventory"}
           </button>
 
           <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
