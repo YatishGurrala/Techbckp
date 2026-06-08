@@ -75,19 +75,15 @@ export default function ContactPage() {
           ))}
         </div>
 
-        <div className="ambient-shadow mt-16 rounded-xl border border-outline-variant bg-surface-container-lowest p-gutter">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary-container">Need to share project details?</p>
-          <h2 className="text-headline-md text-on-background">Fill out the request form</h2>
-          <p className="mt-2 mb-8 max-w-2xl text-body-md text-tertiary">
-            Send us the details in one go so we can review your needs and come back with the right next steps.
-          </p>
+        <div className="ambient-shadow mt-16 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 md:p-6">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-primary-container">Project Request</p>
           <iframe
             src="https://fixed-frame-d08.notion.site/ebd//37921165c02b8088acc5f45842aa4a49"
             width="100%"
-            height="600"
+            height="760"
             frameBorder="0"
             allowFullScreen
-            className="min-h-[600px] w-full rounded-lg border border-outline-variant bg-surface-container-lowest"
+            className="min-h-[760px] w-full rounded-lg border border-outline-variant bg-surface-container-lowest"
             title="Project request form"
           />
         </div>
