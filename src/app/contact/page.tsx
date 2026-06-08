@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { ContactIntakeForm } from "@/components/marketing/contact-intake-form";
 import { PageShell } from "@/components/marketing/page-shell";
 import { externalLinks } from "@/lib/site-data";
 
@@ -82,7 +81,15 @@ export default function ContactPage() {
           <p className="mt-2 mb-8 max-w-2xl text-body-md text-tertiary">
             Send us the details in one go so we can review your needs and come back with the right next steps.
           </p>
-          <ContactIntakeForm />
+          <iframe
+            src="https://fixed-frame-d08.notion.site/ebd//37921165c02b8088acc5f45842aa4a49"
+            width="100%"
+            height="600"
+            frameBorder="0"
+            allowFullScreen
+            className="min-h-[600px] w-full rounded-lg border border-outline-variant bg-surface-container-lowest"
+            title="Project request form"
+          />
         </div>
 
         {/* FAQ strip */}

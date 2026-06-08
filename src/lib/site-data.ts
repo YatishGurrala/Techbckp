@@ -1,6 +1,6 @@
 export const externalLinks = {
   stripe: "https://buy.stripe.com/test_placeholder",
-  calendly: "https://calendly.com/techbckp/intro-call",
+  calendly: "https://calendly.com/yatishg/30min",
   email: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@techbckp.com"}`,
 };
 
