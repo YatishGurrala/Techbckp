@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { getBuildstackConfig } from "@/lib/buildstack/env";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Techbckp | Execution Partner for Founders & Niche Businesses",
@@ -31,12 +25,36 @@ export default function RootLayout({
   getBuildstackConfig();
 
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+        <script src="https://dev.citegpt.xyz/embed.js" data-token="cmsxoq8yo000104jytrjbi34b" defer />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              #citegpt-widget-container {
+                position: fixed !important;
+                right: 20px !important;
+                bottom: 20px !important;
+                z-index: 2147483647 !important;
+                width: 60px !important;
+                height: 60px !important;
+                max-width: calc(100vw - 24px) !important;
+                max-height: calc(100vh - 24px) !important;
+              }
+
+              #citegpt-widget-container iframe {
+                display: block !important;
+                width: 60px !important;
+                height: 60px !important;
+                border: 0 !important;
+              }
+            `,
+          }}
         />
         {/* Theme init: runs synchronously before the page renders to avoid FOUC */}
         <script
