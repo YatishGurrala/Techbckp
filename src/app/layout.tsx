@@ -40,6 +40,11 @@ export default function RootLayout({
                 position: fixed !important;
                 right: 20px !important;
                 bottom: 20px !important;
+                left: auto !important;
+                top: auto !important;
+                display: flex !important;
+                justify-content: flex-end !important;
+                align-items: flex-end !important;
                 z-index: 2147483647 !important;
                 max-width: calc(100vw - 24px) !important;
                 max-height: calc(100vh - 24px) !important;
@@ -47,6 +52,9 @@ export default function RootLayout({
 
               #citegpt-widget-container iframe {
                 display: block !important;
+                position: static !important;
+                right: auto !important;
+                bottom: auto !important;
                 border: 0 !important;
               }
             `,
