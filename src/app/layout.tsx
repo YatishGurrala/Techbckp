@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getBuildstackConfig } from "@/lib/buildstack/env";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
-        <script src="https://dev.citegpt.xyz/embed.js" data-token="cmsxoq8yo000104jytrjbi34b" defer />
+        <Script src="https://dev.citegpt.xyz/embed.js" data-token="cmsxoq8yo000104jytrjbi34b" strategy="afterInteractive" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
