@@ -50,6 +50,9 @@ export default function RootLayout({
                 max-width: calc(100vw - 24px) !important;
                 max-height: calc(100vh - 24px) !important;
                 pointer-events: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
               }
 
               #citegpt-widget-container iframe {
@@ -57,7 +60,11 @@ export default function RootLayout({
                 position: static !important;
                 right: auto !important;
                 bottom: auto !important;
-                border: 0 !important;
+                border: none !important;
+                outline: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                background-color: transparent !important;
                 pointer-events: auto !important;
                 min-width: 76px !important;
                 min-height: 76px !important;
