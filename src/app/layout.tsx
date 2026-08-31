@@ -39,16 +39,16 @@ export default function RootLayout({
             __html: `
               #citegpt-widget-container {
                 position: fixed !important;
-                right: 20px !important;
-                bottom: 20px !important;
+                right: 32px !important;
+                bottom: 32px !important;
                 left: auto !important;
                 top: auto !important;
                 display: flex !important;
                 justify-content: flex-end !important;
                 align-items: flex-end !important;
                 z-index: 2147483647 !important;
-                max-width: calc(100vw - 24px) !important;
-                max-height: calc(100vh - 24px) !important;
+                max-width: calc(100vw - 48px) !important;
+                max-height: calc(100vh - 48px) !important;
                 pointer-events: none !important;
                 background: transparent !important;
                 box-shadow: none !important;
@@ -65,6 +65,7 @@ export default function RootLayout({
                 box-shadow: none !important;
                 background: transparent !important;
                 background-color: transparent !important;
+                border-radius: 0 !important;
                 pointer-events: auto !important;
                 min-width: 76px !important;
                 min-height: 76px !important;
@@ -72,7 +73,7 @@ export default function RootLayout({
 
               #citegpt-widget-container iframe[style*="height: 600px"] {
                 height: 660px !important;
-                max-height: calc(100vh - 40px) !important;
+                max-height: calc(100vh - 64px) !important;
               }
             `,
           }}
