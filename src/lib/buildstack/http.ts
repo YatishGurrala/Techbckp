@@ -7,8 +7,8 @@ type HttpOptions = {
   fetchImpl?: typeof fetch;
 };
 
-const DEFAULT_TIMEOUT_MS = 8_000;
-const DEFAULT_RETRIES = 2;
+const DEFAULT_TIMEOUT_MS = 2_000;
+const DEFAULT_RETRIES = 0;
 const DEFAULT_RETRY_DELAY_MS = 250;
 
 function sleep(ms: number) {
