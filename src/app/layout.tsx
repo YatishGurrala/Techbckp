@@ -49,6 +49,7 @@ export default function RootLayout({
                 z-index: 2147483647 !important;
                 max-width: calc(100vw - 24px) !important;
                 max-height: calc(100vh - 24px) !important;
+                pointer-events: none !important;
               }
 
               #citegpt-widget-container iframe {
@@ -58,6 +59,13 @@ export default function RootLayout({
                 bottom: auto !important;
                 border: 0 !important;
                 pointer-events: auto !important;
+                min-width: 76px !important;
+                min-height: 76px !important;
+              }
+
+              #citegpt-widget-container iframe[style*="height: 600px"] {
+                height: 660px !important;
+                max-height: calc(100vh - 40px) !important;
               }
             `,
           }}
