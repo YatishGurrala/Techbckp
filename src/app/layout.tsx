@@ -34,47 +34,6 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
         <Script src="https://dev.citegpt.xyz/embed.js" data-token="cmsxoq8yo000104jytrjbi34b" strategy="afterInteractive" />
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              #citegpt-widget-container {
-                position: fixed !important;
-                right: 32px !important;
-                bottom: 32px !important;
-                left: auto !important;
-                top: auto !important;
-                display: flex !important;
-                justify-content: flex-end !important;
-                align-items: flex-end !important;
-                z-index: 2147483647 !important;
-                max-width: calc(100vw - 48px) !important;
-                max-height: calc(100vh - 48px) !important;
-                pointer-events: none !important;
-                background: transparent !important;
-                box-shadow: none !important;
-                border: none !important;
-              }
-
-              #citegpt-widget-container iframe {
-                display: block !important;
-                position: static !important;
-                right: auto !important;
-                bottom: auto !important;
-                border: none !important;
-                outline: none !important;
-                box-shadow: none !important;
-                background: transparent !important;
-                background-color: transparent !important;
-                pointer-events: auto !important;
-              }
-
-              #citegpt-widget-container iframe[style*="height: 600px"] {
-                height: 660px !important;
-                max-height: calc(100vh - 64px) !important;
-              }
-            `,
-          }}
-        />
         {/* Theme init: runs synchronously before the page renders to avoid FOUC */}
         <script
           dangerouslySetInnerHTML={{
