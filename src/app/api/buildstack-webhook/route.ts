@@ -13,6 +13,7 @@ type WebhookBody = {
 function revalidateMarketingPaths(slug?: string) {
   revalidatePath("/");
   revalidatePath("/blog");
+  revalidatePath("/sitemap.xml");
 
   if (slug) {
     revalidatePath(`/blog/${encodeURIComponent(slug)}`);

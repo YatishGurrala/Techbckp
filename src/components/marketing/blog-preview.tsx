@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import type { BlogMeta } from "@/lib/blog";
 
 type BlogPreviewProps = {
@@ -45,12 +46,13 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                 alt={post.title}
                 width={1200}
                 height={675}
+                sizes="(min-width: 768px) 33vw, 100vw"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
-            <h4 className="text-headline-md mb-3 text-xl text-zinc-900 transition-colors group-hover:text-primary-container dark:text-white">
+            <h3 className="text-headline-md mb-3 text-xl text-zinc-900 transition-colors group-hover:text-primary-container dark:text-white">
               {post.title}
-            </h4>
+            </h3>
             <p className="text-sm text-tertiary">{post.excerpt}</p>
           </Link>
         ))}
@@ -89,6 +91,7 @@ export function BlogList({ posts }: BlogPreviewProps) {
                 alt={featured.title}
                 width={1400}
                 height={800}
+                sizes="(min-width: 1024px) 58vw, 100vw"
                 className="h-full w-full object-cover"
                 priority
               />
@@ -112,7 +115,7 @@ export function BlogList({ posts }: BlogPreviewProps) {
                   </div>
                   <div>
                     <p className="text-label-bold text-zinc-900 dark:text-white">{featured.author ?? "Techbckp"}</p>
-                    <p className="text-label-sm text-zinc-500">CTO at Techbckp</p>
+                    <p className="text-label-sm text-zinc-500">Techbckp Engineering</p>
                   </div>
                 </div>
                 <span className="text-label-sm text-zinc-500">{featured.readTime}</span>
@@ -133,7 +136,7 @@ export function BlogList({ posts }: BlogPreviewProps) {
                 onClick={() => setSelectedCategory(category)}
                 className={
                   selectedCategory === category
-                    ? "rounded-full bg-orange-50 px-4 py-2 text-label-bold text-orange-500"
+                    ? "rounded-full bg-orange-50 px-4 py-2 text-label-bold text-orange-500 dark:bg-zinc-800"
                     : "rounded-full px-4 py-2 text-label-bold text-zinc-500 transition-colors hover:text-zinc-900 dark:hover:text-white"
                 }
                 aria-pressed={selectedCategory === category}
@@ -157,6 +160,7 @@ export function BlogList({ posts }: BlogPreviewProps) {
                     alt={post.title}
                     width={800}
                     height={500}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
@@ -191,35 +195,36 @@ export function BlogList({ posts }: BlogPreviewProps) {
         ) : null}
       </section>
 
-      <section className="mb-section-gap relative overflow-hidden rounded-2xl bg-zinc-900 px-8 py-16 text-white">
+      <section className="relative mb-section-gap overflow-hidden rounded-2xl bg-zinc-900 px-8 py-14 text-white">
         <div className="pointer-events-none absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-orange-500/10 to-transparent" />
-        <div className="relative z-10 flex flex-col items-center justify-between gap-12 md:flex-row">
+        <div className="relative z-10 flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
           <div className="max-w-xl">
-            <h3 className="text-headline-lg mb-4">Stay Updated</h3>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary-container">
+              Build · Automate · Grow
+            </p>
+            <h3 className="text-headline-lg mb-3">Ready to turn these systems into shipped software?</h3>
             <p className="text-body-lg text-zinc-400">
-              Get our latest technical insights delivered directly to your inbox once a month. No fluff, just execution-focused advice.
+              Explore our execution packages or share your roadmap and we&apos;ll help you scope the fastest path to launch.
             </p>
           </div>
-          <form
-            className="flex w-full flex-col gap-3 md:w-auto md:min-w-[320px]"
-            action="#"
-            method="post"
-          >
-            <div className="flex gap-2 rounded-lg border border-zinc-700 bg-zinc-800 p-1.5">
-              <input
-                className="text-body-md flex-grow border-none bg-transparent px-4 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-0"
-                placeholder="Enter your email"
-                type="email"
-              />
-              <button
-                type="submit"
-                className="rounded-md bg-orange-500 px-6 py-2 text-label-bold text-white transition-colors hover:bg-orange-600"
-              >
-                Subscribe
-              </button>
-            </div>
-            <p className="text-label-sm text-center text-zinc-500">Join 2,500+ founders and engineers.</p>
-          </form>
+          <div className="flex flex-wrap gap-3">
+            <TrackedLink
+              href="/contact?source=blog_cta"
+              eventName="cta_click"
+              eventParams={{ location: "blog_bottom_primary" }}
+              className="rounded-lg bg-primary-container px-6 py-3.5 text-label-bold text-on-primary-container transition-all hover:opacity-90 active:scale-95"
+            >
+              Discuss Your Project
+            </TrackedLink>
+            <TrackedLink
+              href="/services"
+              eventName="cta_click"
+              eventParams={{ location: "blog_bottom_secondary" }}
+              className="rounded-lg border border-zinc-600 px-6 py-3.5 text-label-bold text-white transition-colors hover:border-zinc-400 hover:bg-zinc-800"
+            >
+              Explore Services
+            </TrackedLink>
+          </div>
         </div>
       </section>
     </>

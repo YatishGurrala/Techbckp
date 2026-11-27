@@ -13,6 +13,7 @@ import {
   qualification as fallbackQualification,
   services as fallbackServices,
 } from "./site-data";
+import { getContactEmail } from "./seo";
 
 export type NavItem = { label: string; href: string };
 export type Service = {
@@ -50,11 +51,12 @@ const pageBlockKeyMap: Record<PageKey, string> = {
 };
 
 function toFallbackPage(key: PageKey): NotionPageHtml | null {
+  const email = getContactEmail();
   if (key === "privacy") {
     return {
       title: "Privacy Policy",
       contentHtml:
-        "<p>Privacy policy content is being updated. For questions, email <a href=\"mailto:contact@techbckp.com\">contact@techbckp.com</a>.</p>",
+        `<p>Privacy policy content is being updated. For questions, email <a href="mailto:${email}">${email}</a>.</p>`,
     };
   }
 
@@ -62,7 +64,7 @@ function toFallbackPage(key: PageKey): NotionPageHtml | null {
     return {
       title: "Terms of Service",
       contentHtml:
-        "<p>Terms of service content is being updated. For questions, email <a href=\"mailto:contact@techbckp.com\">contact@techbckp.com</a>.</p>",
+        `<p>Terms of service content is being updated. For questions, email <a href="mailto:${email}">${email}</a>.</p>`,
     };
   }
 

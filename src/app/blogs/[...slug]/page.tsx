@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 type BlogsDetailAliasPageProps = {
   params: Promise<{ slug?: string[] }>;
@@ -9,8 +9,8 @@ export default async function BlogsDetailAliasPage({ params }: BlogsDetailAliasP
   const normalized = slug.join("/").trim();
 
   if (!normalized) {
-    redirect("/blog");
+    permanentRedirect("/blog");
   }
 
-  redirect(`/blog/${encodeURIComponent(normalized)}`);
+  permanentRedirect(`/blog/${encodeURIComponent(normalized)}`);
 }

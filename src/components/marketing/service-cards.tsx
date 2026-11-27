@@ -1,7 +1,9 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import type { Service } from "@/lib/cms";
+
 type ServiceCardsProps = {
   services: Service[];
 };
@@ -40,7 +42,7 @@ export function ServiceCards({ services }: ServiceCardsProps) {
               ) : null}
             </div>
 
-            <h3 className="text-headline-md mb-stack-sm">{service.name}</h3>
+            <h2 className="text-headline-md mb-stack-sm">{service.name}</h2>
             <p className="mb-stack-lg text-tertiary">{service.description}</p>
 
             <div className="mb-stack-lg">
@@ -68,12 +70,14 @@ export function ServiceCards({ services }: ServiceCardsProps) {
               </div>
             </div>
 
-            <Link
-              href="/contact"
+            <TrackedLink
+              href={`/contact?service=${encodeURIComponent(service.name)}&source=services_page`}
+              eventName="cta_click"
+              eventParams={{ location: "service_card", service: service.name }}
               className="rounded border border-on-background py-3 text-center text-label-bold text-on-background transition-colors hover:bg-on-background hover:text-white"
             >
               Start Project
-            </Link>
+            </TrackedLink>
           </article>
         );
       })}
@@ -141,13 +145,14 @@ export function ServicesBento({ services }: ServiceCardsProps) {
                 </Link>
               </div>
               <div className="md:w-1/2">
-                <div className="ambient-shadow sm:rotate-3 overflow-hidden rounded-lg shadow-2xl">
+                <div className="ambient-shadow overflow-hidden rounded-lg shadow-2xl sm:rotate-3">
                   <div className="aspect-[16/10]">
                     <Image
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgDm9nz3fnQ_0vhTmVkdV-39lsGZbwND6ah72GE4ISh4kcBXZimjpXSukY4L3PXzIT53blgHB_qiaqX0xuSiwO9wWwEcU39svmpj2yDRtu0jIp1zm82LgOVJqBb7yAlReO799iz4lgJmc5w2ZTgEv3baZcxvdCM4SFmIjjVPEQATZu1D4cnkshLKNoY73qR9H6hyyvcC_hFUFl3ieFWyrn3ETXALZN07CpbwId4oAdJGjXOqsKeQwXyBk1svkW2t4d8FnneIjuDfke"
                       alt="Growth analytics dashboard"
                       width={1200}
                       height={750}
+                      sizes="(min-width: 768px) 50vw, 100vw"
                       className="h-full w-full object-cover"
                     />
                   </div>

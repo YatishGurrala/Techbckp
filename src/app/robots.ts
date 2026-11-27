@@ -1,28 +1,30 @@
 import type { MetadataRoute } from "next";
 
-const DEFAULT_SITE_URL = "https://techbckp.com";
-
-function getSiteUrl(): string {
-  const envUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.SITE_URL;
-  const value = String(envUrl ?? "").trim();
-
-  if (!value) return DEFAULT_SITE_URL;
-
-  try {
-    return new URL(value).origin;
-  } catch {
-    return DEFAULT_SITE_URL;
-  }
-}
+import { getSiteUrl, isPreviewOrNoIndex } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
+  // On preview deployments, allow crawlers to fetch pages so they can observe
+  // the `X-Robots-Tag: noindex, nofollow` header and `<meta name="robots" content="noindex, nofollow">`,
+  // while omitting the sitemap and disallowing API routes.
+  if (isPreviewOrNoIndex()) {
+    return {
+      rules: {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/"],
+      },
+    };
+  }
+
   const siteUrl = getSiteUrl();
 
   return {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/api/"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

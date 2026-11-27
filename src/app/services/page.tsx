@@ -4,12 +4,16 @@ import Image from "next/image";
 import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
 import { ServiceCards } from "@/components/marketing/service-cards";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getServices } from "@/lib/cms";
+import { buildBreadcrumbJsonLd, buildPageMetadata, buildServicesJsonLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Services | Techbckp",
-  description: "Execution-focused systems for apps, automation, websites, and content. Built for founders and niche businesses.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Services",
+  description:
+    "Execution-focused systems for MVPs, business automation, conversion websites, and content growth. Built for founders and growing businesses.",
+  path: "/services",
+});
 
 export const revalidate = 300;
 
@@ -18,6 +22,13 @@ export default async function ServicesPage() {
 
   return (
     <PageShell>
+      <JsonLd data={buildServicesJsonLd(services)} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+        ])}
+      />
       <section className="page-wrap py-16 md:py-20">
         <h1 className="text-headline-xl max-w-3xl text-on-background">Our Execution Systems</h1>
         <p className="mt-4 max-w-2xl text-body-lg text-tertiary">
@@ -52,6 +63,7 @@ export default async function ServicesPage() {
               alt="Server room with blue lighting"
               width={1000}
               height={700}
+              sizes="(min-width: 768px) 33vw, 100vw"
               className="h-full w-full object-cover"
             />
           </div>

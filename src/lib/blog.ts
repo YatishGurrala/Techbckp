@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { cache } from "react";
 
 import matter from "gray-matter";
 import { remark } from "remark";
@@ -95,7 +96,7 @@ async function readMarkdownPostBySlug(slug: string): Promise<BlogPost | null> {
   };
 }
 
-export async function getSortedPosts(): Promise<BlogMeta[]> {
+export const getSortedPosts = cache(async (): Promise<BlogMeta[]> => {
   const markdownPosts = readMarkdownPosts();
 
   try {
@@ -106,9 +107,9 @@ export async function getSortedPosts(): Promise<BlogMeta[]> {
   }
 
   return markdownPosts;
-}
+});
 
-export async function getPostBySlug(slug: string): Promise<BlogPost> {
+export const getPostBySlug = cache(async (slug: string): Promise<BlogPost> => {
   const normalizedSlug = normalizeSlug(slug);
 
   try {
@@ -123,4 +124,4 @@ export async function getPostBySlug(slug: string): Promise<BlogPost> {
     throw new Error(`Post not found: ${normalizedSlug}`);
   }
   return markdownPost;
-}
+});

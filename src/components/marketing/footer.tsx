@@ -1,13 +1,29 @@
 import Link from "next/link";
 
+import { ConsentPreferencesButton } from "@/components/analytics/consent-preferences-button";
 import { LogoLockup } from "@/components/marketing/logo-lockup";
 
 type FooterProps = {
   variant?: "light" | "dark";
 };
 
+const PRIMARY_LINKS = [
+  { href: "/services", label: "Services" },
+  { href: "/process", label: "Process" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+const LEGAL_LINKS = [
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms-of-service", label: "Terms of Service" },
+];
+
 export function Footer({ variant = "light" }: FooterProps) {
   const isDark = variant === "dark";
+  const currentYear = new Date().getFullYear();
 
   if (isDark) {
     return (
@@ -16,25 +32,29 @@ export function Footer({ variant = "light" }: FooterProps) {
           <div className="flex items-center gap-2">
             <LogoLockup mode="dark" textClassName="text-headline-md text-white tracking-tight" />
           </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <Link href="/services" className="text-sm font-medium tracking-tight text-zinc-200 transition-colors hover:text-orange-400">
-              Services
-            </Link>
-            <Link href="/blog" className="text-sm font-medium tracking-tight text-zinc-200 transition-colors hover:text-orange-400">
-              Insights
-            </Link>
-            <Link href="/contact" className="text-sm font-medium tracking-tight text-zinc-200 transition-colors hover:text-orange-400">
-              Contact
-            </Link>
-            <Link href="/privacy-policy" className="text-sm font-medium tracking-tight text-zinc-200 transition-colors hover:text-orange-400">
-              Privacy
-            </Link>
-            <Link href="/terms-of-service" className="text-sm font-medium tracking-tight text-zinc-200 transition-colors hover:text-orange-400">
-              Terms
-            </Link>
-          </div>
+          <nav aria-label="Footer navigation" className="flex flex-wrap justify-center gap-6">
+            {PRIMARY_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium tracking-tight text-zinc-200 transition-colors hover:text-orange-400"
+              >
+                {item.label}
+              </Link>
+            ))}
+            {LEGAL_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium tracking-tight text-zinc-400 transition-colors hover:text-orange-400"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <ConsentPreferencesButton className="text-sm font-medium tracking-tight text-zinc-400 transition-colors hover:text-orange-400" />
+          </nav>
           <div className="text-sm tracking-tight text-zinc-300 opacity-95">
-            © 2024 Techbckp. The Execution Partner for Founders.
+            © {currentYear} Techbckp. Build · Automate · Grow.
           </div>
         </div>
       </footer>
@@ -46,32 +66,35 @@ export function Footer({ variant = "light" }: FooterProps) {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 py-12 lg:px-8 md:flex-row">
         <div className="flex flex-col items-center gap-2 md:items-start">
           <LogoLockup mode="auto" />
-          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-400">© 2024 Techbckp. All rights reserved.</p>
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-400">
+            © {currentYear} Techbckp. All rights reserved.
+          </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-8">
-          <Link href="/privacy-policy" className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white">
-            Privacy Policy
-          </Link>
-          <Link href="/terms-of-service" className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white">
-            Terms of Service
-          </Link>
-          <Link href="/contact" className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white">
-            Contact
-          </Link>
-        </div>
+        <nav aria-label="Site navigation" className="flex flex-wrap justify-center gap-6">
+          {PRIMARY_LINKS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
-        <div className="flex gap-8">
-          <Link href="/services" className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white">
-            Services
-          </Link>
-          <Link href="/blog" className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white">
-            Blog
-          </Link>
-          <Link href="/contact" className="text-sm font-semibold text-zinc-900 transition-colors hover:text-black hover:underline dark:text-zinc-300 dark:hover:text-white">
-            Contact
-          </Link>
-        </div>
+        <nav aria-label="Legal navigation" className="flex flex-wrap justify-center gap-6">
+          {LEGAL_LINKS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium text-zinc-700 transition-colors hover:text-black hover:underline dark:text-zinc-400 dark:hover:text-white"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <ConsentPreferencesButton className="text-sm font-medium text-zinc-700 transition-colors hover:text-black hover:underline dark:text-zinc-400 dark:hover:text-white" />
+        </nav>
       </div>
     </footer>
   );

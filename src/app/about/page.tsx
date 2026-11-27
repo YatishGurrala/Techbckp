@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildBreadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 import { externalLinks } from "@/lib/site-data";
 
-export const metadata: Metadata = {
-  title: "About | Techbckp",
-  description: "We're an execution-first tech partner for founders, coaches, and niche businesses. No fluff — just systems that ship.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "About",
+  description:
+    "We're an execution-first tech partner for founders, coaches, and niche businesses. No fluff — just systems that ship.",
+  path: "/about",
+});
 
 const VALUES = [
   {
@@ -36,6 +41,12 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <PageShell>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
       {/* Hero */}
       <section className="page-wrap py-16 md:py-24">
         <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-primary-container">Our Story</p>
@@ -52,12 +63,17 @@ export default function AboutPage() {
           founders across fintech, health, coaching, and e-commerce. We don&apos;t consult. We execute.
         </p>
         <div className="mt-10 flex flex-wrap gap-4">
-          <a
+          <TrackedLink
             href={externalLinks.calendly}
+            external
+            target="_blank"
+            rel="noreferrer"
+            eventName="booking_click"
+            eventParams={{ location: "about_hero" }}
             className="rounded-lg bg-primary-container px-8 py-4 text-label-bold text-on-primary transition-all hover:opacity-90 active:scale-95"
           >
             Book a Strategy Call
-          </a>
+          </TrackedLink>
           <Link
             href="/services"
             className="rounded-lg border border-on-background bg-surface-container-lowest px-8 py-4 text-label-bold text-on-background transition-all hover:bg-surface-container"

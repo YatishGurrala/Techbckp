@@ -1,5 +1,6 @@
-// Server-side analytics (best-effort GA4 Measurement Protocol).
-// Ported from the Notionwebapp reference implementation.
+// Server-side operational telemetry (best-effort GA4 Measurement Protocol).
+// Lead conversion events (`generate_lead`) are recorded client-side only to avoid
+// double-counting the same lead across browser and server tracking.
 
 export type AnalyticsEventName =
   | "notion_test_started"
@@ -14,7 +15,9 @@ export type AnalyticsEventName =
   | "notion_publish_verification"
   | "notion_publish_failed"
   | "contact_form_invalid_input"
-  | "contact_form_submitted"
+  | "contact_form_rate_limited"
+  | "contact_form_delivery_unconfigured"
+  | "contact_form_notion_failed"
   | "contact_form_webhook_failed";
 
 export type AnalyticsParams = Record<string, string | number | boolean | null | undefined>;
@@ -45,7 +48,7 @@ export async function trackAnalyticsEvent(input: {
 
   try {
     await fetchImpl(
-      `https://www.google-analytics.com/mp/collect?measurement_id=${input.env.measurementId}&api_secret=${input.env.apiSecret}`,
+      `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(input.env.measurementId)}&api_secret=${encodeURIComponent(input.env.apiSecret)}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { AudienceCards } from "@/components/marketing/audience-cards";
 import { BlogPreview } from "@/components/marketing/blog-preview";
 import { CTASection } from "@/components/marketing/cta-section";
@@ -16,8 +18,16 @@ import {
   getHomepageQualification,
   getHomepageServices,
 } from "@/lib/buildstack/content";
+import { buildPageMetadata, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "@/lib/seo";
 
 export const revalidate = 300;
+
+export const metadata: Metadata = buildPageMetadata({
+  title: DEFAULT_TITLE,
+  description: DEFAULT_DESCRIPTION,
+  path: "/",
+  useAbsoluteTitle: true,
+});
 
 export default async function Home() {
   const [posts, services, audiences, processSteps, qualification, pricing, heroHtml] =
@@ -38,7 +48,7 @@ export default async function Home() {
       <AudienceCards audiences={audiences} />
       <ProcessSection steps={processSteps} />
       <QualificationSection qualification={qualification} />
-      <PricingCards tiers={pricing} />
+      <PricingCards tiers={pricing} headingAs="h2" />
       <BlogPreview posts={posts} />
       <CTASection />
     </PageShell>

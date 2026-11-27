@@ -35,14 +35,27 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+## SEO, Analytics & Search Console Configuration
+
+- `NEXT_PUBLIC_SITE_URL` (default: `https://www.techbckp.com`): Canonical site origin used across metadata, OpenGraph, `robots.txt`, `sitemap.xml`, and JSON-LD.
+- `GOOGLE_SITE_VERIFICATION` (optional, server-only): Verification token rendered as `<meta name="google-site-verification" />` for Google Search Console.
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` (optional): GA4 measurement ID (`G-XXXXXXXXXX`). Uses opt-in analytics consent (suitable for EU/UK visitors), respects GPC/DNT, enforces a strict non-PII parameter allowlist, and sends explicit clean `page_view` events. In GA4 Admin → Web Data Stream → Enhanced Measurement, disable **"Page changes based on browser history events"** to avoid double SPA page views.
+- `GA_API_SECRET` (optional, server-only): GA4 Measurement Protocol secret for server-side operational diagnostics (never exposed to the browser; lead conversions are tracked once on the client to avoid double counting).
+- `NEXT_PUBLIC_NOINDEX` (optional): Set to `true` to block indexing. Vercel preview deployments (`VERCEL_ENV=preview`) emit `X-Robots-Tag: noindex, nofollow` HTTP headers and `<meta name="robots" content="noindex, nofollow">` while allowing crawlers to observe the `noindex` directive (and omitting the sitemap).
+
 ## Contact Form Configuration
 
-The contact page includes a structured intake form that posts to `/api/contact`.
+The contact page uses the native `ContactIntakeForm` component posting to `/api/contact` with rate limiting, duplicate submission protection, honeypot spam protection, pre-fill, and allowlisted UTM/source attribution support.
 
-- `CONTACT_FORM_WEBHOOK_URL` (optional): Absolute URL for your CRM, Zapier/Make scenario, Slack webhook proxy, or backend collector.
-- `CONTACT_FORM_WEBHOOK_SECRET` (optional): Shared secret sent as the `x-contact-form-secret` header.
+- `NEXT_PUBLIC_CONTACT_EMAIL` (default: `hello@techbckp.com`): Public fallback email address.
+- **Direct Notion Leads Database (recommended, server-only):**
+  - `NOTION_API_KEY`: Notion internal integration token shared with your Leads database.
+  - `NOTION_LEADS_DB_ID`: 32-character ID of your Notion Leads database. Columns are matched automatically by name/type and full inquiry details are also saved to the page body.
+- **Optional Webhook Delivery (server-only):**
+  - `CONTACT_FORM_WEBHOOK_URL`: Absolute `https://` URL for a CRM, Slack, or custom automation endpoint.
+  - `CONTACT_FORM_WEBHOOK_SECRET`: Shared secret sent as the `x-contact-form-secret` header.
 
-If `CONTACT_FORM_WEBHOOK_URL` is not set, submissions are still accepted and logged on the server, but they are not forwarded to an external system.
+At least one destination (`NOTION_API_KEY` + `NOTION_LEADS_DB_ID`, or `CONTACT_FORM_WEBHOOK_URL`) must be configured and accept the lead before `/api/contact` returns `200 OK`. Otherwise it returns `503` / `502` and directs visitors to fallback email or Calendly booking.
 
 ## Buildstack CMS Integration
 

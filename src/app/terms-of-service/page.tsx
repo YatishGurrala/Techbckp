@@ -2,16 +2,19 @@ import type { Metadata } from "next";
 
 import { PageShell } from "@/components/marketing/page-shell";
 import { getPage } from "@/lib/cms";
+import { buildPageMetadata, getContactEmail } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Terms of Service | Techbckp",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Terms of Service",
   description: "Terms that govern your use of the Techbckp website and services.",
-};
+  path: "/terms-of-service",
+});
 
 export default async function TermsOfServicePage() {
   const page = await getPage("terms");
+  const contactEmail = getContactEmail();
 
   return (
     <PageShell>
@@ -26,7 +29,7 @@ export default async function TermsOfServicePage() {
           <div className="prose prose-zinc max-w-none dark:prose-invert">
             <p>
               Terms of service content is being updated. For questions, email{" "}
-              <a href="mailto:contact@techbckp.com">contact@techbckp.com</a>.
+              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
             </p>
           </div>
         )}
