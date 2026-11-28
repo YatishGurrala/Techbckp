@@ -1,28 +1,12 @@
 import type { MetadataRoute } from "next";
 
 import { getSortedPosts } from "@/lib/blog";
-
-const DEFAULT_SITE_URL = "https://techbckp.com";
-
-function getSiteUrl(): string {
-  const envUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.SITE_URL;
-  const value = String(envUrl ?? "").trim();
-
-  if (!value) return DEFAULT_SITE_URL;
-
-  try {
-    return new URL(value).origin;
-  } catch {
-    return DEFAULT_SITE_URL;
-  }
-}
+import { getSiteUrl } from "@/lib/seo";
 
 function toValidDate(value: string | Date): Date {
   const date = value instanceof Date ? value : new Date(value);
   return Number.isNaN(date.getTime()) ? new Date() : date;
 }
-
-export const revalidate = 300;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
@@ -86,12 +70,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const posts = await getSortedPosts();
-  const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${siteUrl}/blog/${encodeURIComponent(post.slug)}`,
-    lastModified: toValidDate(post.date),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+  const seenSlugs = new Set<string>();
+  const postRoutes: MetadataRoute.Sitemap = [];
+
+  for (const post of posts) {
+    const slug = post.slug.trim();
+    if (!slug || seenSlugs.has(slug)) continue;
+    seenSlugs.add(slug);
+
+    postRoutes.push({
+      url: `${siteUrl}/blog/${encodeURIComponent(slug)}`,
+      lastModified: toValidDate(post.date),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
+  }
 
   return [...staticRoutes, ...postRoutes];
 }

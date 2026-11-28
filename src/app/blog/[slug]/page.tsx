@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getPostBySlug, getSortedPosts } from "@/lib/blog";
+import {
+  buildBlogPostingJsonLd,
+  buildBreadcrumbJsonLd,
+  buildPageMetadata,
+} from "@/lib/seo";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const revalidate = 300;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
@@ -24,13 +29,22 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   try {
     const post = await getPostBySlug(slug);
-    return {
-      title: `${post.title} | Techbckp Blog`,
-      description: post.excerpt,
-    };
+    return buildPageMetadata({
+      title: post.title,
+      description: post.excerpt || `Read ${post.title} on the Techbckp blog.`,
+      path: `/blog/${encodeURIComponent(post.slug)}`,
+      type: "article",
+      publishedTime: post.date || undefined,
+      authors: post.author ? [post.author] : undefined,
+    });
   } catch {
     return {
-      title: "Post Not Found | Techbckp Blog",
+      title: "Post Not Found",
+      description: "The requested blog post could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 }
@@ -48,13 +62,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   if (post.slug !== normalizedSlug) {
-    redirect(`/blog/${encodeURIComponent(post.slug)}`);
+    permanentRedirect(`/blog/${encodeURIComponent(post.slug)}`);
   }
 
   const related = allPosts.filter((candidate) => candidate.slug !== post.slug).slice(0, 2);
 
   return (
     <PageShell footerVariant="dark">
+      <JsonLd data={buildBlogPostingJsonLd(post)} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${encodeURIComponent(post.slug)}` },
+        ])}
+      />
       <article className="page-wrap max-w-4xl py-14 md:py-20">
         <div className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
           <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">{post.category}</span>
@@ -69,23 +91,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="mt-8 flex items-center gap-4 border-y border-zinc-100 py-6 dark:border-zinc-800">
           <Image
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCikNLvZglalrRYclmzZSLdkAeIQFF095UUyz96bhud_iz5JVpZwuAMtGMe1UX0rqE7sPxbxjDPOxRnim7SpiBRCTG50H8y3wGfqb5Du1IV0KZUM_HXwnjCD0bZ1UIL6ePjVYRuT2dP9l5TYvF4Eyh9gvBA-EklzLvcXNWcfHDxq-iZF6VfUYotPAXclF2PLztrfP9JYqp20ckdOfpcgV34E03wH6BqmrWK8nK3sDOaur9PFUiwewBoZzOqcvtg13w0sNjmr9rd_qA_"
-            alt="Author avatar"
+            alt={`${post.author} avatar`}
             width={48}
             height={48}
+            sizes="48px"
             className="h-12 w-12 rounded-full object-cover grayscale"
           />
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-zinc-900 dark:text-white">{post.author}</span>
-            <span className="text-xs text-zinc-500">VP of Engineering at Techbckp</span>
+            <span className="text-xs text-zinc-500">Techbckp Engineering</span>
           </div>
         </div>
 
         <div className="ambient-shadow mt-10 overflow-hidden rounded-xl border border-zinc-100 dark:border-zinc-800">
           <Image
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSbQNWrJnGoNlYWVtcdF9cO9A_veBi25d1Q3IiHe-y2uKJgRr3w-4JZ8Nk_a0V1aw7q_TKuAkJ22WSPueEn5-3Ru87exrtme9PiTDv2T8nVJ_8NL5wXgP5zcMt8tcNhu3yYC0cp_5eMtQ6CJJDx5YZChD3x2NI466OtswO_wr-kEm-27SWW51_OUSFL_WTl2sozBK1NNlT-IumPkAJUzUndRYg-CIzuRuuHr4E8WAvnO0c75Hebb9i_fMPoWh76OrgKNl9jHz318ub"
-            alt="Article cover"
+            alt={post.title}
             width={1600}
             height={900}
+            sizes="(min-width: 1024px) 896px, 100vw"
             className="h-[360px] w-full object-cover md:h-[500px]"
             priority
           />
@@ -118,7 +142,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   href={`/blog/${encodeURIComponent(item.slug)}`}
                   className="group overflow-hidden rounded-xl border border-zinc-100 bg-white p-5 transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Case Study</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    {item.category || "Article"}
+                  </p>
                   <h3 className="mt-2 text-lg font-semibold tracking-tight text-zinc-900 transition-colors group-hover:text-[#ff8400] dark:text-white">
                     {item.title}
                   </h3>

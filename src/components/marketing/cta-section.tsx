@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 
 type CTASectionProps = {
   title?: string;
@@ -28,19 +28,23 @@ export function CTASection({
           <h2 className="text-headline-lg text-on-background">{title}</h2>
           <p className="mx-auto mt-stack-md max-w-2xl px-6 text-body-lg text-tertiary">{body}</p>
           <div className="mt-stack-lg flex flex-wrap items-center justify-center gap-3">
-            <Link
+            <TrackedLink
               href={primaryHref}
+              eventName="cta_click"
+              eventParams={{ location: "cta_section_light_primary", label: primaryLabel }}
               className="rounded-lg bg-primary-container px-8 py-4 text-label-bold text-on-primary shadow-lg transition-all hover:opacity-90 active:scale-95"
             >
               {primaryLabel}
-            </Link>
+            </TrackedLink>
             {secondaryLabel && secondaryHref ? (
-              <Link
+              <TrackedLink
                 href={secondaryHref}
+                eventName="cta_click"
+                eventParams={{ location: "cta_section_light_secondary", label: secondaryLabel }}
                 className="rounded-lg border border-on-background bg-surface-container-lowest px-8 py-4 text-label-bold text-on-background transition-all hover:bg-zinc-50"
               >
                 {secondaryLabel}
-              </Link>
+              </TrackedLink>
             ) : null}
           </div>
         </div>
@@ -66,19 +70,23 @@ export function CTASection({
               <h2 className="text-headline-xl mb-stack-md">{title}</h2>
               <p className="mx-auto mb-8 max-w-xl text-body-lg text-zinc-400">{body}</p>
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <Link
+                <TrackedLink
                   href={primaryHref}
+                  eventName="cta_click"
+                  eventParams={{ location: "cta_section_dark_primary", label: primaryLabel }}
                   className="rounded-lg bg-primary-container px-8 py-4 text-label-bold text-on-primary-container shadow transition-all hover:opacity-90 active:scale-95"
                 >
                   {primaryLabel}
-                </Link>
+                </TrackedLink>
                 {secondaryLabel && secondaryHref ? (
-                  <Link
+                  <TrackedLink
                     href={secondaryHref}
+                    eventName="cta_click"
+                    eventParams={{ location: "cta_section_dark_secondary", label: secondaryLabel }}
                     className="rounded-lg bg-surface-container-lowest px-8 py-4 text-label-bold text-on-background transition hover:bg-zinc-100"
                   >
                     {secondaryLabel}
-                  </Link>
+                  </TrackedLink>
                 ) : null}
               </div>
             </>

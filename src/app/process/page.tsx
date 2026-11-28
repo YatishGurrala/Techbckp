@@ -1,15 +1,28 @@
+import type { Metadata } from "next";
+
 import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
 import { ProcessTimeline, SuccessMetrics, TechStack } from "@/components/marketing/process-timeline";
-import { getProcessSteps } from "@/lib/cms";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildBreadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { processSteps } from "@/lib/site-data";
 
-export const revalidate = 300;
+export const metadata: Metadata = buildPageMetadata({
+  title: "Process",
+  description:
+    "See how Techbckp takes founders from idea to production launch in three structured steps using proven engineering systems.",
+  path: "/process",
+});
 
-export default async function ProcessPage() {
-  const steps = await getProcessSteps();
-
+export default function ProcessPage() {
   return (
     <PageShell>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Process", path: "/process" },
+        ])}
+      />
       <section className="page-wrap py-16 md:py-20">
         <h1 className="text-4xl font-extrabold tracking-tight text-on-background md:text-6xl">The Techbckp Blueprint</h1>
         <p className="mt-4 max-w-3xl text-lg text-tertiary">
@@ -17,7 +30,7 @@ export default async function ProcessPage() {
           strategies that turn complex problems into streamlined solutions.
         </p>
       </section>
-      <ProcessTimeline steps={steps} />
+      <ProcessTimeline steps={processSteps} />
       <TechStack />
       <SuccessMetrics />
       <CTASection

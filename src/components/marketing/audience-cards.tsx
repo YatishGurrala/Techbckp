@@ -1,4 +1,4 @@
-import type { Audience } from "@/lib/cms";
+import type { Audience } from "@/lib/site-data";
 
 type AudienceCardsProps = {
   audiences: Audience[];

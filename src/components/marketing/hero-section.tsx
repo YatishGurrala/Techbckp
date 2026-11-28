@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { TrackedLink } from "@/components/analytics/tracked-link";
+
 type HeroSectionProps = {
   html?: string | null;
 };
@@ -24,12 +26,14 @@ export function HeroSection({ html }: HeroSectionProps = {}) {
           From idea to launch, we handle everything using proven systems so you can focus on growth.
         </p>
         <div className="flex flex-wrap gap-4 pt-4">
-          <Link
-            href="/contact"
+          <TrackedLink
+            href="/contact?source=homepage_hero"
+            eventName="cta_click"
+            eventParams={{ location: "homepage_hero_primary" }}
             className="rounded-lg bg-primary-container px-8 py-4 text-label-bold text-on-primary-container shadow transition-all hover:shadow-lg active:scale-95"
           >
             Start Your Project
-          </Link>
+          </TrackedLink>
           <Link
             href="/services"
             className="rounded-lg border border-on-background bg-surface-container-lowest px-8 py-4 text-label-bold text-on-background transition-all hover:bg-surface-container"
@@ -46,6 +50,7 @@ export function HeroSection({ html }: HeroSectionProps = {}) {
             alt="Modern abstract digital illustration of intersecting orange and obsidian geometric shapes representing scalable software systems"
             width={1200}
             height={1200}
+            sizes="(min-width: 768px) 50vw, 100vw"
             className="h-full w-full object-cover"
             priority
           />

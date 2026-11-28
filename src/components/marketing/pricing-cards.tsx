@@ -1,10 +1,11 @@
-import type { PricingTier } from "@/lib/cms";
-import { externalLinks } from "@/lib/site-data";
+import { TrackedLink } from "@/components/analytics/tracked-link";
+import { externalLinks, type PricingTier } from "@/lib/site-data";
 
 type PricingCardsProps = {
   tiers: PricingTier[];
   title?: string;
   subtitle?: string;
+  headingAs?: "h1" | "h2";
 };
 
 const TIER_LABELS: Record<string, string> = {
@@ -29,11 +30,16 @@ export function PricingCards({
   tiers,
   title = "Investment in Your Growth",
   subtitle = "Starting prices that scale with your ambition. No hidden fees. Just execution-focused packages tailored to your stage.",
+  headingAs = "h2",
 }: PricingCardsProps) {
+  const HeadingTag = headingAs;
+
   return (
     <section className="mx-auto max-w-7xl px-6 lg:px-8" id="pricing">
-      <header className="py-section-gap mx-auto max-w-3xl text-center">
-        <h1 className="text-headline-xl mb-stack-md text-on-background">{title}</h1>
+      <header className="mx-auto max-w-3xl py-section-gap text-center">
+        <HeadingTag className="text-headline-xl mb-stack-md text-on-background">
+          {title}
+        </HeadingTag>
         <p className="text-body-lg text-tertiary">{subtitle}</p>
       </header>
 
@@ -43,13 +49,19 @@ export function PricingCards({
             const isFeatured = !!tier.featured;
             const label = tierLabel(tier.name);
             const range = TYPICAL_RANGE[tier.name];
-            const ctaHref = tier.ctaHref && !tier.ctaHref.includes("test_placeholder") ? tier.ctaHref : "/contact";
+            const fallbackContactHref = `/contact?service=${encodeURIComponent(tier.name)}&source=pricing_cards`;
+            const ctaHref =
+              tier.ctaHref && !tier.ctaHref.includes("test_placeholder")
+                ? tier.ctaHref
+                : fallbackContactHref;
+            const isExternalBooking = ctaHref.includes("calendly.com");
+
             return (
               <div
                 key={tier.name}
                 className={
                   isFeatured
-                    ? "group ambient-shadow relative z-10 flex md:scale-105 flex-col rounded-xl border-2 border-primary-container bg-surface-container-lowest p-stack-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                    ? "group ambient-shadow relative z-10 flex flex-col rounded-xl border-2 border-primary-container bg-surface-container-lowest p-stack-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-lg md:scale-105"
                     : "group ambient-shadow flex flex-col rounded-xl border border-outline-variant bg-surface-container-lowest p-stack-lg transition-all duration-200 hover:-translate-y-1 hover:border-primary-container hover:shadow-lg"
                 }
               >
@@ -94,8 +106,12 @@ export function PricingCards({
                   ))}
                 </ul>
 
-                <a
+                <TrackedLink
                   href={ctaHref}
+                  target={isExternalBooking ? "_blank" : undefined}
+                  rel={isExternalBooking ? "noreferrer" : undefined}
+                  eventName={isExternalBooking ? "booking_click" : "cta_click"}
+                  eventParams={{ location: "pricing_card", service: tier.name }}
                   className={
                     isFeatured
                       ? "rounded bg-primary-container px-6 py-4 text-center text-label-bold text-on-primary transition-colors group-hover:bg-orange-500"
@@ -103,14 +119,14 @@ export function PricingCards({
                   }
                 >
                   {tier.ctaLabel}
-                </a>
+                </TrackedLink>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-lg border border-orange-100 bg-orange-50 p-4 md:flex-row">
-          <div className="flex items-center gap-3 text-orange-800">
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-lg border border-orange-100 bg-orange-50 p-4 dark:border-orange-900/40 dark:bg-orange-950/30 md:flex-row">
+          <div className="flex items-center gap-3 text-orange-800 dark:text-orange-200">
             <span className="material-symbols-outlined" aria-hidden>
               info
             </span>
@@ -118,12 +134,17 @@ export function PricingCards({
               All projects are custom-scoped to your specific needs. Let&apos;s discuss your requirements and create the perfect solution.
             </p>
           </div>
-          <a
+          <TrackedLink
             href={externalLinks.calendly}
+            external
+            target="_blank"
+            rel="noreferrer"
+            eventName="booking_click"
+            eventParams={{ location: "pricing_banner" }}
             className="whitespace-nowrap rounded-lg bg-primary px-6 py-2 text-label-bold text-white transition-colors hover:opacity-90"
           >
             Book a Call
-          </a>
+          </TrackedLink>
         </div>
       </div>
     </section>
@@ -151,19 +172,21 @@ export function CustomSolutions() {
           </div>
         </div>
         <div className="z-10 flex-shrink-0">
-          <a
-            href="/contact"
-            className="rounded-lg bg-surface-container-lowest px-8 py-4 text-label-bold text-on-background transition-colors hover:bg-zinc-100"
+          <TrackedLink
+            href="/contact?service=Other&source=pricing_custom_solutions"
+            eventName="cta_click"
+            eventParams={{ location: "pricing_custom_solutions" }}
+            className="inline-flex rounded-lg bg-surface-container-lowest px-8 py-4 text-label-bold text-on-background transition-colors hover:bg-zinc-100"
           >
             Request Custom Quote
-          </a>
+          </TrackedLink>
         </div>
       </div>
     </section>
   );
 }
 
-const FAQS = [
+export const PRICING_FAQS = [
   {
     q: "How long does 'The Setup' typically take?",
     a: "Our foundation projects are designed for speed. Typically, we deliver a fully hardened cloud infrastructure and CI/CD pipeline within 10-14 business days from the kickoff meeting.",
@@ -190,9 +213,9 @@ export function PricingFAQ() {
         <p className="mt-stack-sm text-tertiary">Everything you need to know about partnering with Techbckp.</p>
       </div>
       <div className="space-y-gutter">
-        {FAQS.map((faq) => (
+        {PRICING_FAQS.map((faq) => (
           <div key={faq.q} className="ambient-shadow rounded-lg bg-surface-container-lowest p-stack-lg outline-subtle">
-            <h4 className="text-headline-md mb-stack-sm text-lg">{faq.q}</h4>
+            <h3 className="text-headline-md mb-stack-sm text-lg">{faq.q}</h3>
             <p className="text-tertiary">{faq.a}</p>
           </div>
         ))}

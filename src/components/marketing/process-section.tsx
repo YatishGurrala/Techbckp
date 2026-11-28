@@ -1,4 +1,4 @@
-import type { ProcessStep } from "@/lib/cms";
+import type { ProcessStep } from "@/lib/site-data";
 
 type ProcessSectionProps = {
   steps: ProcessStep[];

@@ -1,38 +1,77 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { PageShell } from "@/components/marketing/page-shell";
+import { ProjectBriefBuilder } from "@/components/marketing/project-brief-builder";
+import { JsonLd } from "@/components/seo/json-ld";
+import {
+  buildBreadcrumbJsonLd,
+  buildFaqJsonLd,
+  buildPageMetadata,
+  getContactEmail,
+} from "@/lib/seo";
 import { externalLinks } from "@/lib/site-data";
 
-const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@techbckp.com";
-const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
+export const metadata: Metadata = buildPageMetadata({
+  title: "Contact",
+  description: "Start a project, draft a project brief, email our team, or book a 30-minute strategy call with Techbckp.",
+  path: "/contact",
+});
 
-export const metadata: Metadata = {
-  title: "Contact | Techbckp",
-  description: "Start a project, ask a question, or book a strategy call with Techbckp.",
-};
-
-const OPTIONS = [
+const CONTACT_FAQS = [
   {
-    icon: "calendar_today",
-    title: "Book a Strategy Call",
-    body: "30-minute call to discuss your project, timeline, and budget. No fluff, just clarity.",
-    cta: "Schedule a Call",
-    href: externalLinks.calendly,
-    accent: true,
+    q: "What industries do you work with?",
+    a: "Founders, coaches, SaaS builders, niche e-commerce brands, and local services that need to scale digitally.",
   },
   {
-    icon: "mail",
-    title: "Send an Email",
-    body: "Prefer async? Drop us a line and we'll respond within one business day.",
-    cta: CONTACT_EMAIL,
-    href: GMAIL_COMPOSE_URL,
-    accent: false,
+    q: "How quickly can you start?",
+    a: "Most projects kick off within a week of signing. We keep capacity for fast-moving founders.",
+  },
+  {
+    q: "Do you take equity?",
+    a: "We are primarily a service business. We work for fixed fees, not equity — so our incentives are always aligned with delivery.",
+  },
+  {
+    q: "What if I'm not sure what I need?",
+    a: "Book a strategy call. We'll scope the right solution together — no sales pressure, just honest advice.",
   },
 ];
 
 export default function ContactPage() {
+  const contactEmail = getContactEmail();
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contactEmail)}`;
+
+  const options = [
+    {
+      icon: "calendar_today",
+      title: "Book a Strategy Call",
+      body: "30-minute call to discuss your project, timeline, and budget. No fluff, just clarity.",
+      cta: "Schedule a Call",
+      href: externalLinks.calendly,
+      eventName: "booking_click" as const,
+      accent: true,
+    },
+    {
+      icon: "mail",
+      title: "Send an Email",
+      body: "Prefer async? Drop us a line and we'll respond within one business day.",
+      cta: contactEmail,
+      href: gmailComposeUrl,
+      eventName: "email_click" as const,
+      accent: false,
+    },
+  ];
+
   return (
     <PageShell>
+      <JsonLd data={buildFaqJsonLd(CONTACT_FAQS)} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
       <section className="page-wrap py-16 md:py-24">
         <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-primary-container">Get in Touch</p>
         <h1 className="text-headline-xl max-w-2xl text-on-background">
@@ -45,7 +84,7 @@ export default function ContactPage() {
 
       <section className="page-wrap pb-section-gap">
         <div className="grid grid-cols-1 gap-gutter md:grid-cols-2">
-          {OPTIONS.map((opt) => (
+          {options.map((opt) => (
             <div
               key={opt.title}
               className={
@@ -54,62 +93,53 @@ export default function ContactPage() {
                   : "ambient-shadow flex flex-col rounded-xl border border-outline-variant bg-surface-container-lowest p-stack-lg"
               }
             >
-              <span className="material-symbols-outlined filled mb-stack-md text-primary-container text-[2rem]" aria-hidden>
+              <span className="material-symbols-outlined filled mb-stack-md text-[2rem] text-primary-container" aria-hidden>
                 {opt.icon}
               </span>
-              <h3 className="text-headline-md mb-stack-sm text-on-background">{opt.title}</h3>
+              <h2 className="text-headline-md mb-stack-sm text-on-background">{opt.title}</h2>
               <p className="mb-stack-lg flex-1 text-body-md text-tertiary">{opt.body}</p>
-              <a
+              <TrackedLink
                 href={opt.href}
-                target={opt.title === "Send an Email" ? "_blank" : undefined}
-                rel={opt.title === "Send an Email" ? "noreferrer" : undefined}
+                external
+                target="_blank"
+                rel="noreferrer"
+                eventName={opt.eventName}
+                eventParams={{ location: "contact_cards" }}
                 className={
                   opt.accent
-                    ? "inline-flex justify-center rounded-lg bg-primary-container px-6 py-3 text-label-bold text-on-primary transition-all hover:opacity-90 active:scale-95"
+                    ? "inline-flex justify-center rounded-lg bg-primary-container px-6 py-3 text-label-bold text-on-primary-container transition-all hover:opacity-90 active:scale-95"
                     : "inline-flex justify-center rounded-lg border border-on-background px-6 py-3 text-label-bold text-on-background transition-all hover:bg-surface-container active:scale-95"
                 }
               >
                 {opt.cta}
-              </a>
+              </TrackedLink>
             </div>
           ))}
         </div>
 
-        <div className="ambient-shadow mt-16 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 md:p-6">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-primary-container">Project Request</p>
-          <iframe
-            src="https://fixed-frame-d08.notion.site/ebd//37921165c02b8088acc5f45842aa4a49"
-            width="100%"
-            height="760"
-            frameBorder="0"
-            allowFullScreen
-            className="min-h-[760px] w-full rounded-lg border border-outline-variant bg-surface-container-lowest"
-            title="Project request form"
-          />
+        <div className="ambient-shadow mt-16 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 md:p-8">
+          <div className="mb-6">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary-container">
+              Project Brief Builder
+            </p>
+            <h2 className="text-headline-md text-on-background">Prepare your project brief</h2>
+            <p className="mt-2 text-body-md text-tertiary">
+              Outline your service, budget, timeline, and goals below — then email your pre-filled brief directly, copy it, or book a strategy call.
+            </p>
+          </div>
+          <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-surface-container-low" />}>
+            <ProjectBriefBuilder
+              contactEmail={contactEmail}
+              calendlyUrl={externalLinks.calendly}
+            />
+          </Suspense>
         </div>
 
         {/* FAQ strip */}
         <div className="mt-16 rounded-xl border border-outline-variant bg-surface-container-low p-gutter">
-          <h3 className="text-headline-md mb-stack-lg text-on-background">Before you reach out</h3>
+          <h2 className="text-headline-md mb-stack-lg text-on-background">Before you reach out</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            {[
-              {
-                q: "What industries do you work with?",
-                a: "Founders, coaches, SaaS builders, niche e-commerce brands, and local services that need to scale digitally.",
-              },
-              {
-                q: "How quickly can you start?",
-                a: "Most projects kick off within a week of signing. We keep capacity for fast-moving founders.",
-              },
-              {
-                q: "Do you take equity?",
-                a: "We are primarily a service business. We work for fixed fees, not equity — so our incentives are always aligned with delivery.",
-              },
-              {
-                q: "What if I'm not sure what I need?",
-                a: "Book a strategy call. We'll scope the right solution together — no sales pressure, just honest advice.",
-              },
-            ].map((item) => (
+            {CONTACT_FAQS.map((item) => (
               <div key={item.q}>
                 <p className="mb-1 font-semibold text-on-background">{item.q}</p>
                 <p className="text-body-md text-tertiary">{item.a}</p>
