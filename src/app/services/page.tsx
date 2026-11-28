@@ -5,8 +5,8 @@ import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
 import { ServiceCards } from "@/components/marketing/service-cards";
 import { JsonLd } from "@/components/seo/json-ld";
-import { getServices } from "@/lib/cms";
 import { buildBreadcrumbJsonLd, buildPageMetadata, buildServicesJsonLd } from "@/lib/seo";
+import { services } from "@/lib/site-data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Services",
@@ -15,11 +15,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/services",
 });
 
-export const revalidate = 300;
-
-export default async function ServicesPage() {
-  const services = await getServices();
-
+export default function ServicesPage() {
   return (
     <PageShell>
       <JsonLd data={buildServicesJsonLd(services)} />

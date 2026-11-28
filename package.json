@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync:buildstack": "node --env-file=.env.local scripts/sync-buildstack-content.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

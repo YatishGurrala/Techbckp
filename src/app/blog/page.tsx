@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 
-import { BlogAdminControls } from "@/components/marketing/blog-admin-controls";
 import { BlogList } from "@/components/marketing/blog-preview";
 import { PageShell } from "@/components/marketing/page-shell";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -14,9 +12,6 @@ export const metadata: Metadata = buildPageMetadata({
     "Practical guides on MVP development, business automation, software architecture, and execution systems for founders.",
   path: "/blog",
 });
-
-// Re-fetch from CMS at most every 5 minutes; webhook revalidation handles instant updates.
-export const revalidate = 300;
 
 export default async function BlogPage() {
   const posts = await getSortedPosts();
@@ -36,9 +31,6 @@ export default async function BlogPage() {
         </p>
       </section>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <Suspense fallback={null}>
-          <BlogAdminControls posts={posts} />
-        </Suspense>
         <BlogList posts={posts} />
       </div>
     </PageShell>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import type { ProcessStep } from "@/lib/cms";
+import type { ProcessStep } from "@/lib/site-data";
 
 type ProcessTimelineProps = {
   steps: ProcessStep[];

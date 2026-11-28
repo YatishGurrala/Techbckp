@@ -8,8 +8,6 @@ function toValidDate(value: string | Date): Date {
   return Number.isNaN(date.getTime()) ? new Date() : date;
 }
 
-export const revalidate = 300;
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
   const now = new Date();

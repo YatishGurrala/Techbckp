@@ -1,5 +1,3 @@
-import { isNotionLeadsConfigured } from "@/lib/notion-leads";
-
 export const SERVICE_OPTIONS = [
   "MVP development",
   "Mobile app development",
@@ -29,25 +27,25 @@ export const TIMELINE_OPTIONS = [
 ] as const;
 
 const SERVICE_SLUG_MAP: Record<string, (typeof SERVICE_OPTIONS)[number]> = {
-  "mvp": "MVP development",
+  mvp: "MVP development",
   "mvp-development": "MVP development",
   "mvp-launch-system": "MVP development",
-  "mobile": "Mobile app development",
+  mobile: "Mobile app development",
   "mobile-app-development": "Mobile app development",
-  "saas": "SaaS development",
+  saas: "SaaS development",
   "saas-development": "SaaS development",
-  "automation": "AI automation and integrations",
+  automation: "AI automation and integrations",
   "ai-automation": "AI automation and integrations",
   "business-automation-setup": "AI automation and integrations",
-  "chatbot": "AI chatbot development",
+  chatbot: "AI chatbot development",
   "ai-chatbot-development": "AI chatbot development",
-  "web": "Website development",
+  web: "Website development",
   "web-development": "Website development",
   "conversion-website-setup": "Website development",
-  "content": "Content systems",
+  content: "Content systems",
   "content-systems": "Content systems",
   "content-growth-system": "Content systems",
-  "advisory": "Technical advisory",
+  advisory: "Technical advisory",
   "technical-advisory": "Technical advisory",
 };
 
@@ -75,49 +73,54 @@ export function normalizeOptionSelection<T extends readonly string[]>(
   return options.find((opt) => opt.toLowerCase() === trimmed) ?? "";
 }
 
-export function isValidWebhookUrl(raw: string | undefined | null): boolean {
-  const value = String(raw ?? "").trim();
-  if (!value) return false;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "https:" || parsed.protocol === "http:";
-  } catch {
-    return false;
-  }
-}
-
-export function isContactWebhookConfigured(
-  env: Record<string, string | undefined> = process.env,
-): boolean {
-  return isValidWebhookUrl(env.CONTACT_FORM_WEBHOOK_URL);
-}
-
-export function isContactDeliveryConfigured(
-  env: Record<string, string | undefined> = process.env,
-): boolean {
-  return isNotionLeadsConfigured(env) || isContactWebhookConfigured(env);
-}
-
-export type ContactAttribution = {
-  source?: string;
-  referrerPath?: string;
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
-  utmContent?: string;
-  utmTerm?: string;
-  toolSummary?: string;
-};
-
-export type ContactSubmissionInput = {
-  name: string;
-  email: string;
+export type ProjectBriefDraft = {
+  name?: string;
   company?: string;
   service: string;
   budget: string;
   timeline: string;
-  message: string;
-  website?: string;
-  attribution?: ContactAttribution;
+  estimate?: string;
+  details: string;
 };
 
+export function buildProjectBriefSubject(draft: Pick<ProjectBriefDraft, "service" | "company">): string {
+  const servicePart = draft.service ? draft.service : "New Project";
+  const companyPart = draft.company?.trim() ? ` — ${draft.company.trim()}` : "";
+  return `Techbckp Project Inquiry: ${servicePart}${companyPart}`;
+}
+
+export function buildProjectBriefText(draft: ProjectBriefDraft): string {
+  const lines = [
+    "Hi Techbckp team,",
+    "",
+    "Here is my project brief:",
+    draft.name?.trim() ? `Name: ${draft.name.trim()}` : null,
+    draft.company?.trim() ? `Company: ${draft.company.trim()}` : null,
+    draft.service ? `Service needed: ${draft.service}` : null,
+    draft.budget ? `Budget range: ${draft.budget}` : null,
+    draft.timeline ? `Preferred timeline: ${draft.timeline}` : null,
+    draft.estimate?.trim() ? `Estimated scope: ${draft.estimate.trim()}` : null,
+    "",
+    "Project goals & requirements:",
+    draft.details.trim() || "(Describe what you're looking to build or automate)",
+  ].filter((line): line is string => line !== null);
+
+  return lines.join("\n");
+}
+
+export function buildPrefilledMailto(email: string, draft: ProjectBriefDraft): string {
+  const subject = encodeURIComponent(buildProjectBriefSubject(draft));
+  const body = encodeURIComponent(buildProjectBriefText(draft));
+  return `mailto:${email}?subject=${subject}&body=${body}`;
+}
+
+export function buildPrefilledGmailUrl(email: string, draft: ProjectBriefDraft): string {
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: email,
+    su: buildProjectBriefSubject(draft),
+    body: buildProjectBriefText(draft),
+  });
+  return `https://mail.google.com/mail/?${params.toString()}`;
+}

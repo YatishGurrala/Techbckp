@@ -1,4 +1,4 @@
-import type { Qualification } from "@/lib/cms";
+import type { Qualification } from "@/lib/site-data";
 
 type QualificationSectionProps = {
   qualification: Qualification;

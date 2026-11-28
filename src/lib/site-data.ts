@@ -1,10 +1,34 @@
+export type NavItem = { label: string; href: string };
+
+export type Service = {
+  name: string;
+  price: string;
+  duration: string;
+  description: string;
+  includes: string[];
+  featured?: boolean;
+};
+
+export type PricingTier = {
+  name: string;
+  price: string;
+  tagline: string;
+  features: string[];
+  ctaLabel: string;
+  ctaHref: string;
+  featured?: boolean;
+};
+
+export type Audience = { title: string; body: string };
+export type ProcessStep = { title: string; subtitle: string; description: string };
+export type Qualification = { goodFit: string[]; notFit: string[] };
+
 export const externalLinks = {
-  stripe: "https://buy.stripe.com/test_placeholder",
   calendly: "https://calendly.com/yatishg/30min",
   email: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@techbckp.com"}`,
 };
 
-export const navItems = [
+export const navItems: NavItem[] = [
   { href: "/services", label: "Services" },
   { href: "/process", label: "Process" },
   { href: "/pricing", label: "Pricing" },
@@ -13,7 +37,7 @@ export const navItems = [
   { href: "/contact", label: "Contact" },
 ];
 
-export const services = [
+export const services: Service[] = [
   {
     name: "MVP Launch System",
     price: "$2,000+",
@@ -69,7 +93,17 @@ export const services = [
   },
 ];
 
-export const audiences = [
+export const pricingTiers: PricingTier[] = services.map((service) => ({
+  name: service.name,
+  price: service.price,
+  tagline: service.description,
+  features: service.includes,
+  ctaLabel: "Start Project",
+  ctaHref: `/contact?service=${encodeURIComponent(service.name)}&source=pricing_cards`,
+  featured: service.featured,
+}));
+
+export const audiences: Audience[] = [
   {
     title: "Founders",
     body: "Launch faster without hiring a full tech team. We help you validate and ship with confidence.",
@@ -84,7 +118,7 @@ export const audiences = [
   },
 ];
 
-export const processSteps = [
+export const processSteps: ProcessStep[] = [
   {
     title: "Idea",
     subtitle: "We refine what to build",
@@ -105,7 +139,7 @@ export const processSteps = [
   },
 ];
 
-export const qualification = {
+export const qualification: Qualification = {
   goodFit: [
     "Founders with a clear problem to solve",
     "Experts looking to productize services",

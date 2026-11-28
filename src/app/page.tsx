@@ -10,17 +10,14 @@ import { ProcessSection } from "@/components/marketing/process-section";
 import { QualificationSection } from "@/components/marketing/qualification-section";
 import { ServicesBento } from "@/components/marketing/service-cards";
 import { getSortedPosts } from "@/lib/blog";
-import {
-  getHomepageAudiences,
-  getHomepageHeroHtml,
-  getHomepagePricing,
-  getHomepageProcessSteps,
-  getHomepageQualification,
-  getHomepageServices,
-} from "@/lib/buildstack/content";
 import { buildPageMetadata, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "@/lib/seo";
-
-export const revalidate = 300;
+import {
+  audiences,
+  pricingTiers,
+  processSteps,
+  qualification,
+  services,
+} from "@/lib/site-data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: DEFAULT_TITLE,
@@ -30,25 +27,16 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default async function Home() {
-  const [posts, services, audiences, processSteps, qualification, pricing, heroHtml] =
-    await Promise.all([
-      getSortedPosts(),
-      getHomepageServices(),
-      getHomepageAudiences(),
-      getHomepageProcessSteps(),
-      getHomepageQualification(),
-      getHomepagePricing(),
-      getHomepageHeroHtml(),
-    ]);
+  const posts = await getSortedPosts();
 
   return (
     <PageShell>
-      <HeroSection html={heroHtml} />
+      <HeroSection />
       <ServicesBento services={services} />
       <AudienceCards audiences={audiences} />
       <ProcessSection steps={processSteps} />
       <QualificationSection qualification={qualification} />
-      <PricingCards tiers={pricing} headingAs="h2" />
+      <PricingCards tiers={pricingTiers} headingAs="h2" />
       <BlogPreview posts={posts} />
       <CTASection />
     </PageShell>

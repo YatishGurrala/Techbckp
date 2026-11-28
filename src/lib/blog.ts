@@ -6,8 +6,6 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
 
-import { getCmsBlogList, getCmsBlogPost } from "./buildstack/content";
-
 export type BlogMeta = {
   slug: string;
   title: string;
@@ -37,16 +35,6 @@ function normalizeSlug(value: string): string {
 
 function sortByDateDesc(a: BlogMeta, b: BlogMeta): number {
   return a.date < b.date ? 1 : -1;
-}
-
-function mergePosts(markdownPosts: BlogMeta[], notionPosts: BlogMeta[]): BlogMeta[] {
-  const merged = new Map<string, BlogMeta>();
-
-  // Start with markdown so a published Notion post with the same slug can override it.
-  for (const post of markdownPosts) merged.set(post.slug, post);
-  for (const post of notionPosts) merged.set(post.slug, post);
-
-  return Array.from(merged.values()).sort(sortByDateDesc);
 }
 
 function readMarkdownPosts(): BlogMeta[] {
@@ -97,31 +85,16 @@ async function readMarkdownPostBySlug(slug: string): Promise<BlogPost | null> {
 }
 
 export const getSortedPosts = cache(async (): Promise<BlogMeta[]> => {
-  const markdownPosts = readMarkdownPosts();
-
-  try {
-    const cmsPosts = await getCmsBlogList();
-    return mergePosts(markdownPosts, cmsPosts);
-  } catch (err) {
-    console.warn("[blog] Buildstack list failed, falling back to markdown", err);
-  }
-
-  return markdownPosts;
+  return readMarkdownPosts();
 });
 
 export const getPostBySlug = cache(async (slug: string): Promise<BlogPost> => {
   const normalizedSlug = normalizeSlug(slug);
-
-  try {
-    const post = await getCmsBlogPost(normalizedSlug);
-    if (post) return post;
-  } catch (err) {
-    console.warn("[blog] Buildstack fetch failed, falling back to markdown", err);
-  }
-
   const markdownPost = await readMarkdownPostBySlug(normalizedSlug);
+
   if (!markdownPost) {
     throw new Error(`Post not found: ${normalizedSlug}`);
   }
+
   return markdownPost;
 });

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import type { Service } from "@/lib/cms";
+import type { Service } from "@/lib/site-data";
 
 type ServiceCardsProps = {
   services: Service[];

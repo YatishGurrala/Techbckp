@@ -4,8 +4,8 @@ import { CTASection } from "@/components/marketing/cta-section";
 import { PageShell } from "@/components/marketing/page-shell";
 import { ProcessTimeline, SuccessMetrics, TechStack } from "@/components/marketing/process-timeline";
 import { JsonLd } from "@/components/seo/json-ld";
-import { getProcessSteps } from "@/lib/cms";
 import { buildBreadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { processSteps } from "@/lib/site-data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Process",
@@ -14,11 +14,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/process",
 });
 
-export const revalidate = 300;
-
-export default async function ProcessPage() {
-  const steps = await getProcessSteps();
-
+export default function ProcessPage() {
   return (
     <PageShell>
       <JsonLd
@@ -34,7 +30,7 @@ export default async function ProcessPage() {
           strategies that turn complex problems into streamlined solutions.
         </p>
       </section>
-      <ProcessTimeline steps={steps} />
+      <ProcessTimeline steps={processSteps} />
       <TechStack />
       <SuccessMetrics />
       <CTASection

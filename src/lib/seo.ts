@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import type { BlogMeta } from "@/lib/blog";
-import type { Service } from "@/lib/cms";
+import type { Service } from "@/lib/site-data";
 
 export const DEFAULT_SITE_URL = "https://www.techbckp.com";
 export const SITE_NAME = "Techbckp";

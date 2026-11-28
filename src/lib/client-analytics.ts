@@ -2,10 +2,9 @@ import { getAnalyticsConsent } from "@/lib/consent";
 
 export type ClientAnalyticsEventName =
   | "cta_click"
-  | "contact_form_started"
-  | "generate_lead"
+  | "email_click"
   | "booking_click"
-  | "email_click";
+  | "brief_copied";
 
 export type AnalyticsEventValue = string | number | boolean | undefined;
 export type ClientAnalyticsParams = Record<string, AnalyticsEventValue>;

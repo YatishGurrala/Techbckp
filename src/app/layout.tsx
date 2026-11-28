@@ -5,7 +5,6 @@ import { Suspense } from "react";
 
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { JsonLd } from "@/components/seo/json-ld";
-import { getBuildstackConfig } from "@/lib/buildstack/env";
 import {
   buildOrganizationJsonLd,
   buildWebsiteJsonLd,
@@ -69,9 +68,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Validate CMS integration env vars early so misconfiguration fails fast.
-  getBuildstackConfig();
-
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>

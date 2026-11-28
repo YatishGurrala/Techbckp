@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { ContactIntakeForm } from "@/components/marketing/contact-intake-form";
 import { PageShell } from "@/components/marketing/page-shell";
+import { ProjectBriefBuilder } from "@/components/marketing/project-brief-builder";
 import { JsonLd } from "@/components/seo/json-ld";
-import { isContactDeliveryConfigured } from "@/lib/contact";
 import {
   buildBreadcrumbJsonLd,
   buildFaqJsonLd,
@@ -14,11 +13,9 @@ import {
 } from "@/lib/seo";
 import { externalLinks } from "@/lib/site-data";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = buildPageMetadata({
   title: "Contact",
-  description: "Start a project, submit a brief, or book a 30-minute strategy call with Techbckp.",
+  description: "Start a project, draft a project brief, email our team, or book a 30-minute strategy call with Techbckp.",
   path: "/contact",
 });
 
@@ -44,7 +41,6 @@ const CONTACT_FAQS = [
 export default function ContactPage() {
   const contactEmail = getContactEmail();
   const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contactEmail)}`;
-  const isDeliveryConfigured = isContactDeliveryConfigured();
 
   const options = [
     {
@@ -111,7 +107,7 @@ export default function ContactPage() {
                 eventParams={{ location: "contact_cards" }}
                 className={
                   opt.accent
-                    ? "inline-flex justify-center rounded-lg bg-primary-container px-6 py-3 text-label-bold text-on-primary transition-all hover:opacity-90 active:scale-95"
+                    ? "inline-flex justify-center rounded-lg bg-primary-container px-6 py-3 text-label-bold text-on-primary-container transition-all hover:opacity-90 active:scale-95"
                     : "inline-flex justify-center rounded-lg border border-on-background px-6 py-3 text-label-bold text-on-background transition-all hover:bg-surface-container active:scale-95"
                 }
               >
@@ -124,18 +120,17 @@ export default function ContactPage() {
         <div className="ambient-shadow mt-16 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 md:p-8">
           <div className="mb-6">
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary-container">
-              Project Inquiry
+              Project Brief Builder
             </p>
-            <h2 className="text-headline-md text-on-background">Tell us about your project</h2>
+            <h2 className="text-headline-md text-on-background">Prepare your project brief</h2>
             <p className="mt-2 text-body-md text-tertiary">
-              Share your goals, scope, and timeline. We&apos;ll review your brief and follow up with clear next steps.
+              Outline your service, budget, timeline, and goals below — then email your pre-filled brief directly, copy it, or book a strategy call.
             </p>
           </div>
           <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-surface-container-low" />}>
-            <ContactIntakeForm
-              fallbackEmail={contactEmail}
+            <ProjectBriefBuilder
+              contactEmail={contactEmail}
               calendlyUrl={externalLinks.calendly}
-              isDeliveryConfigured={isDeliveryConfigured}
             />
           </Suspense>
         </div>

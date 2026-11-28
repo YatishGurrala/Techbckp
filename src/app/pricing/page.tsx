@@ -9,8 +9,8 @@ import {
   PricingFAQ,
 } from "@/components/marketing/pricing-cards";
 import { JsonLd } from "@/components/seo/json-ld";
-import { getPage, getPricing } from "@/lib/cms";
 import { buildBreadcrumbJsonLd, buildFaqJsonLd, buildPageMetadata } from "@/lib/seo";
+import { pricingTiers } from "@/lib/site-data";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Pricing",
@@ -19,11 +19,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/pricing",
 });
 
-export const revalidate = 300;
-
-export default async function PricingPage() {
-  const [tiers, cta] = await Promise.all([getPricing(), getPage("cta")]);
-
+export default function PricingPage() {
   return (
     <PageShell>
       <JsonLd data={buildFaqJsonLd(PRICING_FAQS)} />
@@ -34,7 +30,7 @@ export default async function PricingPage() {
         ])}
       />
       <PricingCards
-        tiers={tiers}
+        tiers={pricingTiers}
         headingAs="h1"
         title="Transparent Investment"
         subtitle="Starting prices that scale with your ambition. Final investment depends on scope, complexity, and specific requirements."
@@ -42,7 +38,6 @@ export default async function PricingPage() {
       <CustomSolutions />
       <PricingFAQ />
       <CTASection
-        html={cta?.contentHtml ?? null}
         title="Ready to build something robust?"
         body="Stop worrying about infrastructure and focus on your product while our team handles implementation."
         primaryLabel="Start Your Project"

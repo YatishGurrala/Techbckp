@@ -1,6 +1,5 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import type { PricingTier } from "@/lib/cms";
-import { externalLinks } from "@/lib/site-data";
+import { externalLinks, type PricingTier } from "@/lib/site-data";
 
 type PricingCardsProps = {
   tiers: PricingTier[];
